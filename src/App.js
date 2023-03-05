@@ -6,7 +6,7 @@ import './App.css';
 function App() {
   return (
     <>
-      <h1>Projeto Star Wars</h1>
+      <h1>Star Wars Planets</h1>
       <PlanetProvider>
         <Table />
       </PlanetProvider>
