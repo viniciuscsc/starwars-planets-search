@@ -1,29 +1,11 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import PlanetContext from './PlanetContext';
+import useFetchPlanets from '../hooks/useFetchPlanets';
+import useHandleChange from '../hooks/useHandleChange';
 
 export default function PlanetProvider({ children }) {
-  const [planets, setPlanets] = useState([]);
-  const [nameFilter, setNameFilter] = useState('');
-
-  const handleNameInputChange = ({ target: { value } }) => {
-    setNameFilter(value);
-  };
-
-  const fetchPlanets = () => {
-    const URL = 'https://swapi.dev/api/planets';
-
-    fetch(URL)
-      .then((response) => response.json())
-      .then((data) => {
-        data.results.map((planet) => delete planet.residents);
-        setPlanets(data.results);
-      });
-  };
-
-  useEffect(() => {
-    fetchPlanets();
-  }, []);
+  const { planets } = useFetchPlanets();
+  const { nameFilter, handleNameInputChange } = useHandleChange();
 
   return (
     <PlanetContext.Provider value={ { handleNameInputChange, nameFilter, planets } }>
