@@ -104,19 +104,13 @@ export default function Table() {
             ? planets
               .filter(({ name }) => name.includes(nameFilter))
               .filter((planet) => {
-                switch (comparisonFilter) {
-                case 'maior que':
-                  return planet[columnFilter] > valueFilter;
-
-                case 'menor que':
-                  return planet[columnFilter] < valueFilter;
-
-                case 'igual a':
-                  return planet[columnFilter] === valueFilter;
-
-                default:
-                  return 0;
+                if (comparisonFilter === 'maior que') {
+                  return Number(planet[columnFilter]) > Number(valueFilter);
                 }
+                if (comparisonFilter === 'menor que') {
+                  return Number(planet[columnFilter]) < Number(valueFilter);
+                }
+                return Number(planet[columnFilter]) === Number(valueFilter);
               })
               .map((planet) => (
                 <tr key={ planet.url }>
