@@ -5,6 +5,7 @@ import PlanetsContext from './PlanetsContext';
 export default function PlanetsProvider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [columnTitles, setColumnTitles] = useState([]);
+  const [nameFilter, setNameFilter] = useState('');
 
   const fetchPlanets = async () => {
     const URL = 'https://swapi.dev/api/planets';
@@ -21,8 +22,19 @@ export default function PlanetsProvider({ children }) {
     fetchPlanets();
   }, []);
 
+  const handleNameFilterChange = ({ target: { value } }) => {
+    setNameFilter(value);
+  };
+
+  const providedObject = {
+    columnTitles,
+    nameFilter,
+    planets,
+    handleNameFilterChange,
+  };
+
   return (
-    <PlanetsContext.Provider value={ { columnTitles, planets } }>
+    <PlanetsContext.Provider value={ providedObject }>
       {children}
     </PlanetsContext.Provider>
   );
