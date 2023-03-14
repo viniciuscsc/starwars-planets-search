@@ -4,12 +4,12 @@ import PlanetsContext from './PlanetsContext';
 
 export default function PlanetsProvider({ children }) {
   const [planets, setPlanets] = useState([]);
+  const [backupPlanets, setBackupPlanets] = useState([]);
   const [columnTitles, setColumnTitles] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
-  const [columnFilter, setColumnFilter] = useState('rotation_period');
+  const [columnFilter, setColumnFilter] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
-  const [isFiltering, setIsFiltering] = useState(false);
 
   const fetchPlanets = async () => {
     const URL = 'https://swapi.dev/api/planets';
@@ -20,6 +20,7 @@ export default function PlanetsProvider({ children }) {
 
     setPlanets(data.results);
     setColumnTitles(Object.keys(data.results[0]));
+    setBackupPlanets(data.results);
   };
 
   useEffect(() => {
@@ -41,15 +42,28 @@ export default function PlanetsProvider({ children }) {
     setComparisonFilter(valueOpt);
   };
 
+  const applyNewFilter = (array) => {
+    const newArray = array.filter((element) => {
+      if (comparisonFilter === 'maior que') {
+        return Number(element[columnFilter]) > Number(valueFilter);
+      }
+      if (comparisonFilter === 'menor que') {
+        return Number(element[columnFilter]) < Number(valueFilter);
+      }
+      return Number(element[columnFilter]) === Number(valueFilter);
+    });
+    setPlanets(newArray);
+  };
+
   const handleFilterBtnClick = () => {
-    setIsFiltering(true);
+    applyNewFilter(planets);
   };
 
   const providedObject = {
+    backupPlanets, // não acho que será necessário enviá-lo
     columnFilter,
     columnTitles,
     comparisonFilter,
-    isFiltering,
     nameFilter,
     planets,
     valueFilter,

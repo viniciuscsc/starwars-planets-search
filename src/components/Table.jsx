@@ -6,7 +6,6 @@ export default function Table() {
     columnFilter,
     columnTitles,
     comparisonFilter,
-    isFiltering,
     nameFilter,
     planets,
     valueFilter,
@@ -68,6 +67,7 @@ export default function Table() {
           type="number"
           id="value-filter"
           data-testid="value-filter"
+          value={ valueFilter }
           onChange={ handleFilterChange }
         />
       </label>
@@ -80,6 +80,13 @@ export default function Table() {
         Filtrar
       </button>
 
+      <div>
+        <p>
+          {`${columnFilter} ${comparisonFilter} ${valueFilter} `}
+          <button type="button">Remover</button>
+        </p>
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -89,34 +96,15 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {isFiltering
-            ? planets
-              .filter(({ name }) => name.includes(nameFilter))
-              .filter((planet) => {
-                if (comparisonFilter === 'maior que') {
-                  return Number(planet[columnFilter]) > Number(valueFilter);
-                }
-                if (comparisonFilter === 'menor que') {
-                  return Number(planet[columnFilter]) < Number(valueFilter);
-                }
-                return Number(planet[columnFilter]) === Number(valueFilter);
-              })
-              .map((planet) => (
-                <tr key={ planet.url }>
-                  {Object.keys(planet).map((e) => (
-                    <td key={ e }>{planet[e]}</td>
-                  ))}
-                </tr>
-              ))
-            : planets
-              .filter(({ name }) => name.includes(nameFilter))
-              .map((planet) => (
-                <tr key={ planet.url }>
-                  {Object.keys(planet).map((e) => (
-                    <td key={ e }>{planet[e]}</td>
-                  ))}
-                </tr>
-              ))}
+          {planets
+            .filter(({ name }) => name.includes(nameFilter))
+            .map((planet) => (
+              <tr key={ planet.url }>
+                {Object.keys(planet).map((e) => (
+                  <td key={ e }>{planet[e]}</td>
+                ))}
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
