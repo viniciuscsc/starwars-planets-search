@@ -78,7 +78,8 @@ export default function PlanetsProvider({ children }) {
   };
 
   const providedObject = {
-    backupPlanets, // não acho que será necessário enviá-lo
+    backupColumnFilterOpt, // não vai ser usado aqui
+    backupPlanets, // não vai ser usado aqui
     columnFilter,
     columnFilterOpt,
     columnTitles,
