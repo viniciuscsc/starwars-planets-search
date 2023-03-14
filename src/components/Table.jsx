@@ -6,6 +6,7 @@ export default function Table() {
     columnFilter,
     columnTitles,
     comparisonFilter,
+    columnFilterOpt,
     nameFilter,
     planets,
     valueFilter,
@@ -13,13 +14,6 @@ export default function Table() {
     handleComparisonFilterChange,
     handleFilterBtnClick,
     handleFilterChange } = useContext(PlanetsContext);
-
-  const columnFilterOptions = [
-    'population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water'];
 
   const comparisonFilterOptions = ['maior que', 'menor que', 'igual a'];
 
@@ -42,7 +36,7 @@ export default function Table() {
           data-testid="column-filter"
           onChange={ handleColumnFilterChange }
         >
-          {columnFilterOptions.map((opt) => (
+          {columnFilterOpt.map((opt) => (
             <option key={ opt } value={ opt }>{opt}</option>
           ))}
         </select>

@@ -10,6 +10,19 @@ export default function PlanetsProvider({ children }) {
   const [columnFilter, setColumnFilter] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [valueFilter, setValueFilter] = useState(0);
+  const [columnFilterOpt, setColumnFilterOpt] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water']);
+
+  const backupColumnFilterOpt = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water'];
 
   const fetchPlanets = async () => {
     const URL = 'https://swapi.dev/api/planets';
@@ -52,7 +65,12 @@ export default function PlanetsProvider({ children }) {
       }
       return Number(element[columnFilter]) === Number(valueFilter);
     });
+
+    const newOptions = columnFilterOpt
+      .filter((option) => option !== columnFilter);
+
     setPlanets(newArray);
+    setColumnFilterOpt(newOptions);
   };
 
   const handleFilterBtnClick = () => {
@@ -62,6 +80,7 @@ export default function PlanetsProvider({ children }) {
   const providedObject = {
     backupPlanets, // não acho que será necessário enviá-lo
     columnFilter,
+    columnFilterOpt,
     columnTitles,
     comparisonFilter,
     nameFilter,
