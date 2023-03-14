@@ -71,6 +71,9 @@ export default function PlanetsProvider({ children }) {
 
     setPlanets(newArray);
     setColumnFilterOpt(newOptions);
+    setColumnFilter(newOptions[0]);
+    setComparisonFilter('maior que');
+    setValueFilter(0);
   };
 
   const handleFilterBtnClick = () => {
