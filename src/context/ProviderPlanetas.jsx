@@ -5,6 +5,7 @@ import ContextPlanetas from './ContextPlanetas';
 export default function ProviderPlanetas({ children }) {
   const [planetas, setPlanetas] = useState([]);
   const [titulosColunas, setTitulosColunas] = useState([]);
+  const [filtroNome, setFiltroNome] = useState('');
 
   const buscaPlanetas = async () => {
     const URL = 'https://swapi.dev/api/planets';
@@ -24,9 +25,16 @@ export default function ProviderPlanetas({ children }) {
     buscaPlanetas();
   }, []);
 
+  const capturaValorFiltroNome = ({ target: { value } }) => {
+    const nomeDigitado = value;
+    setFiltroNome(nomeDigitado);
+  };
+
   const estadoGlobal = {
+    filtroNome,
     planetas,
     titulosColunas,
+    capturaValorFiltroNome,
   };
 
   return (

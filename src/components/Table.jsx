@@ -3,11 +3,20 @@ import ContextPlanetas from '../context/ContextPlanetas';
 
 export default function Table() {
   const {
+    filtroNome,
     planetas,
-    titulosColunas } = useContext(ContextPlanetas);
+    titulosColunas,
+    capturaValorFiltroNome } = useContext(ContextPlanetas);
 
   return (
     <div>
+      <div>
+        <input
+          data-testid="name-filter"
+          type="text"
+          onChange={ capturaValorFiltroNome }
+        />
+      </div>
       <table>
         <thead>
           <tr>
@@ -17,13 +26,15 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {planetas.map((planeta) => (
-            <tr key={ planeta.name }>
-              {Object.values(planeta).map((valor, index) => (
-                <td key={ index }>{valor}</td>
-              ))}
-            </tr>
-          ))}
+          {planetas
+            .filter(({ name }) => name.includes(filtroNome))
+            .map((planeta) => (
+              <tr key={ planeta.name }>
+                {Object.values(planeta).map((valor, index) => (
+                  <td key={ index }>{valor}</td>
+                ))}
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
