@@ -88,8 +88,8 @@ export default function Table() {
             .filter(({ name }) => name.includes(nome))
             .map((planeta) => (
               <tr key={ planeta.name }>
-                {Object.values(planeta).map((valor, index) => (
-                  <td key={ index }>{valor}</td>
+                {Object.values(planeta).map((value, index) => (
+                  <td key={ index }>{value}</td>
                 ))}
               </tr>
             ))}
