@@ -55,6 +55,14 @@ export default function ProviderPlanetas({ children }) {
     if (id === 'operador') setOperador(opcaoSelecionada);
   };
 
+  const atualizaOpcoesFiltroColuna = (opcaoSelecionada) => {
+    const novaListaOpcoesFiltroColuna = opcoesFiltroColuna
+      .filter((opcao) => opcao !== opcaoSelecionada);
+
+    setOpcoesFiltroColuna(novaListaOpcoesFiltroColuna);
+    setColuna(novaListaOpcoesFiltroColuna[0]);
+  };
+
   const aplicaNovoFiltro = (listaPlanetas) => {
     const novaListaPlanetas = listaPlanetas.filter((planeta) => {
       if (operador === 'maior que') return Number(planeta[coluna]) > Number(valor);
@@ -63,6 +71,7 @@ export default function ProviderPlanetas({ children }) {
     });
 
     setPlanetas(novaListaPlanetas);
+    atualizaOpcoesFiltroColuna(coluna);
   };
 
   const estadoGlobal = {
