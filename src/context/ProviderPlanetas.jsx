@@ -4,13 +4,11 @@ import ContextPlanetas from './ContextPlanetas';
 
 export default function ProviderPlanetas({ children }) {
   const [planetas, setPlanetas] = useState([]);
-  const [titulosColunas, setTitulosColunas] = useState([]);
-
   const [nome, setNome] = useState('');
   const [coluna, setColuna] = useState('population');
   const [operador, setOperador] = useState('maior que');
   const [valor, setValor] = useState(0);
-
+  const [filtrosAplicados, setFiltrosAplicados] = useState([]);
   const [opcoesFiltroColuna, setOpcoesFiltroColuna] = useState([
     'population',
     'orbital_period',
@@ -19,10 +17,20 @@ export default function ProviderPlanetas({ children }) {
     'surface_water',
   ]);
 
+  const [backupPlanetas, setBackupPlanetas] = useState([]);
+  const [titulosColunas, setTitulosColunas] = useState([]);
   const opcoesFiltroComparacao = [
     'maior que',
     'menor que',
     'igual a',
+  ];
+
+  const backupOpcoesFiltroColuna = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
   ];
 
   const buscaPlanetas = async () => {
@@ -34,6 +42,7 @@ export default function ProviderPlanetas({ children }) {
 
     planetasAPI.filter((planeta) => delete planeta.residents);
     setPlanetas(planetasAPI);
+    setBackupPlanetas(planetasAPI);
 
     const titulosColunasAPI = Object.keys(planetasAPI[0]);
     setTitulosColunas(titulosColunasAPI);
@@ -55,37 +64,91 @@ export default function ProviderPlanetas({ children }) {
     if (id === 'operador') setOperador(opcaoSelecionada);
   };
 
-  const atualizaOpcoesFiltroColuna = (opcaoSelecionada) => {
-    const novaListaOpcoesFiltroColuna = opcoesFiltroColuna
-      .filter((opcao) => opcao !== opcaoSelecionada);
+  const aplicaFiltro = (arrayPlanetas, opcaoColuna, opcaoOperador, valorDigitado) => {
+    // 1 - adicionar filtro ao array de filtros aplicados
+    const novoFiltrosAplicados = filtrosAplicados
+      .concat({
+        coluna: opcaoColuna,
+        operador: opcaoOperador,
+        valor: valorDigitado,
+      });
+    setFiltrosAplicados(novoFiltrosAplicados);
 
-    setOpcoesFiltroColuna(novaListaOpcoesFiltroColuna);
-    setColuna(novaListaOpcoesFiltroColuna[0]);
+    // 2 - executar a lógica do filtro para atualizar o array de planetas
+    const novoPlanetas = arrayPlanetas.filter((planeta) => {
+      if (opcaoOperador === 'maior que') {
+        return Number(planeta[opcaoColuna]) > Number(valorDigitado);
+      }
+      if (opcaoOperador === 'menor que') {
+        return Number(planeta[opcaoColuna]) < Number(valorDigitado);
+      }
+      return Number(planeta[opcaoColuna]) === Number(valorDigitado);
+    });
+    setPlanetas(novoPlanetas);
+
+    // 3 - remover a coluna escolhida do array de opções de filtro de coluna
+    const novoOpcoesFiltroColuna = opcoesFiltroColuna
+      .filter((opcao) => opcao !== opcaoColuna);
+    setOpcoesFiltroColuna(novoOpcoesFiltroColuna);
+
+    // 4 - definir valores iniciais dos campos de select e input do valor
+    setColuna(novoOpcoesFiltroColuna[0]);
+    setOperador('maior que');
+    setValor(0);
   };
 
-  const aplicaNovoFiltro = (listaPlanetas) => {
-    const novaListaPlanetas = listaPlanetas.filter((planeta) => {
-      if (operador === 'maior que') return Number(planeta[coluna]) > Number(valor);
-      if (operador === 'menor que') return Number(planeta[coluna]) < Number(valor);
-      return Number(planeta[coluna]) === Number(valor);
-    });
+  const removeFiltro = ({ target: { id } }) => {
+    // 1 - adicionar a coluna do filtro removido do array de opções de filtro de coluna
+    const novoOpcoesFiltroColuna = opcoesFiltroColuna.concat(id);
+    setOpcoesFiltroColuna(novoOpcoesFiltroColuna);
 
-    setPlanetas(novaListaPlanetas);
-    atualizaOpcoesFiltroColuna(coluna);
+    // 2 - remover filtro do array de filtro aplicados
+    const novoFiltrosAplicados = filtrosAplicados
+      .filter((filtro) => filtro.coluna !== id);
+    setFiltrosAplicados(novoFiltrosAplicados);
+
+    // 3 - aplicar filtro do array de filtros aplicados ao backup planetas
+    let planetasInicial = backupPlanetas;
+
+    novoFiltrosAplicados.forEach((filtro) => {
+      const novoPlanetas = planetasInicial.filter((planeta) => {
+        if (filtro.operador === 'maior que') {
+          return Number(planeta[filtro.coluna]) > Number(filtro.valor);
+        }
+        if (filtro.operador === 'menor que') {
+          return Number(planeta[filtro.coluna]) < Number(filtro.valor);
+        }
+        return Number(planeta[filtro.coluna]) === Number(filtro.valor);
+      });
+      planetasInicial = novoPlanetas;
+    });
+    setPlanetas(planetasInicial);
+  };
+
+  const removeTodosFiltros = () => {
+    setPlanetas(backupPlanetas);
+    setFiltrosAplicados([]);
+    setOpcoesFiltroColuna(backupOpcoesFiltroColuna);
+    setColuna('population');
+    setOperador('maior que');
+    setValor(0);
   };
 
   const estadoGlobal = {
     coluna,
     nome,
+    filtrosAplicados,
     opcoesFiltroColuna,
     opcoesFiltroComparacao,
     operador,
     planetas,
     titulosColunas,
     valor,
-    aplicaNovoFiltro,
+    aplicaFiltro,
     recebeOpcaoSelecionada,
     recebeTextoDigitado,
+    removeFiltro,
+    removeTodosFiltros,
   };
 
   return (

@@ -5,15 +5,18 @@ export default function Table() {
   const {
     coluna,
     nome,
+    filtrosAplicados,
     opcoesFiltroColuna,
     opcoesFiltroComparacao,
     operador,
     planetas,
     titulosColunas,
     valor,
-    aplicaNovoFiltro,
+    aplicaFiltro,
     recebeOpcaoSelecionada,
-    recebeTextoDigitado } = useContext(ContextPlanetas);
+    recebeTextoDigitado,
+    removeFiltro,
+    removeTodosFiltros } = useContext(ContextPlanetas);
 
   return (
     <div>
@@ -69,11 +72,34 @@ export default function Table() {
         <button
           data-testid="button-filter"
           type="button"
-          onClick={ () => aplicaNovoFiltro(planetas) }
+          onClick={ () => aplicaFiltro(planetas, coluna, operador, valor) }
         >
           Filtrar
         </button>
+
+        <button
+          data-testid="button-remove-filters"
+          type="button"
+          onClick={ removeTodosFiltros }
+        >
+          Remover filtros
+        </button>
+
       </div>
+
+      {filtrosAplicados
+        && filtrosAplicados.map((filtro, index) => (
+          <p key={ index } data-testid="filter">
+            <span>{`${filtro.coluna} ${filtro.operador} ${filtro.valor} `}</span>
+            <button
+              type="button"
+              id={ filtro.coluna }
+              onClick={ removeFiltro }
+            >
+              Remover
+            </button>
+          </p>
+        ))}
 
       <table>
         <thead>
