@@ -138,12 +138,34 @@ export default function ProviderPlanetas({ children }) {
   };
 
   const ordenaPlanetas = () => {
-    // const colunaEscolhida = colunaOrdenar;
-    // const tipoOrdenacao = radioClicado;
+    const tipoOrdenacao = radioClicado;
 
-    const novoPlanetas = planetas.sort((a, b) => a[colunaOrdenar] - b[colunaOrdenar]);
-    console.log(novoPlanetas);
-    setPlanetas(novoPlanetas);
+    if (tipoOrdenacao === 'ASC') {
+      const arrayOrdenado = planetas.sort((a, b) => a[colunaOrdenar] - b[colunaOrdenar]);
+
+      const arraySemUnknown = arrayOrdenado
+        .filter((elemento) => elemento[colunaOrdenar] !== 'unknown');
+
+      const arrayDeUnknown = arrayOrdenado
+        .filter((elemento) => elemento[colunaOrdenar] === 'unknown');
+
+      const novoPlanetas = arraySemUnknown.concat(...arrayDeUnknown);
+
+      setPlanetas([...novoPlanetas]);
+    }
+    if (tipoOrdenacao === 'DESC') {
+      const arrayOrdenado = planetas.sort((a, b) => b[colunaOrdenar] - a[colunaOrdenar]);
+
+      const arraySemUnknown = arrayOrdenado
+        .filter((elemento) => elemento[colunaOrdenar] !== 'unknown');
+
+      const arrayDeUnknown = arrayOrdenado
+        .filter((elemento) => elemento[colunaOrdenar] === 'unknown');
+
+      const novoPlanetas = arraySemUnknown.concat(...arrayDeUnknown);
+
+      setPlanetas([...novoPlanetas]);
+    }
   };
 
   const estadoGlobal = {
