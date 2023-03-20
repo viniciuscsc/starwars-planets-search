@@ -141,30 +141,32 @@ export default function ProviderPlanetas({ children }) {
     const tipoOrdenacao = radioClicado;
 
     if (tipoOrdenacao === 'ASC') {
-      const arrayOrdenado = planetas.sort((a, b) => a[colunaOrdenar] - b[colunaOrdenar]);
-
-      const arraySemUnknown = arrayOrdenado
+      const arraySemUnknown = planetas
         .filter((elemento) => elemento[colunaOrdenar] !== 'unknown');
 
-      const arrayDeUnknown = arrayOrdenado
+      const arrayDeUnknown = planetas
         .filter((elemento) => elemento[colunaOrdenar] === 'unknown');
 
-      const novoPlanetas = arraySemUnknown.concat(...arrayDeUnknown);
+      const arrayOrdenado = arraySemUnknown
+        .sort((a, b) => a[colunaOrdenar] - b[colunaOrdenar]);
 
-      setPlanetas([...novoPlanetas]);
+      const novoPlanetas = [...arrayOrdenado].concat(arrayDeUnknown);
+
+      setPlanetas(novoPlanetas);
     }
     if (tipoOrdenacao === 'DESC') {
-      const arrayOrdenado = planetas.sort((a, b) => b[colunaOrdenar] - a[colunaOrdenar]);
-
-      const arraySemUnknown = arrayOrdenado
+      const arraySemUnknown = planetas
         .filter((elemento) => elemento[colunaOrdenar] !== 'unknown');
 
-      const arrayDeUnknown = arrayOrdenado
+      const arrayDeUnknown = planetas
         .filter((elemento) => elemento[colunaOrdenar] === 'unknown');
 
-      const novoPlanetas = arraySemUnknown.concat(...arrayDeUnknown);
+      const arrayOrdenado = arraySemUnknown
+        .sort((a, b) => b[colunaOrdenar] - a[colunaOrdenar]);
 
-      setPlanetas([...novoPlanetas]);
+      const novoPlanetas = [...arrayOrdenado].concat(arrayDeUnknown);
+
+      setPlanetas(novoPlanetas);
     }
   };
 
