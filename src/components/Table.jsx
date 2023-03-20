@@ -3,7 +3,9 @@ import ContextPlanetas from '../context/ContextPlanetas';
 
 export default function Table() {
   const {
+    backupOpcoesFiltroColuna,
     coluna,
+    colunaOrdenar,
     nome,
     filtrosAplicados,
     opcoesFiltroColuna,
@@ -13,10 +15,12 @@ export default function Table() {
     titulosColunas,
     valor,
     aplicaFiltro,
+    ordenaPlanetas,
     recebeOpcaoSelecionada,
     recebeTextoDigitado,
     removeFiltro,
-    removeTodosFiltros } = useContext(ContextPlanetas);
+    removeTodosFiltros,
+    setRadioClicado } = useContext(ContextPlanetas);
 
   return (
     <div>
@@ -84,7 +88,54 @@ export default function Table() {
         >
           Remover filtros
         </button>
+      </div>
 
+      <div>
+        <label htmlFor="coluna-ordenar">
+          {'Ordenar: '}
+          <select
+            data-testid="column-sort"
+            id="coluna-ordenar"
+            value={ colunaOrdenar }
+            onChange={ recebeOpcaoSelecionada }
+          >
+            {backupOpcoesFiltroColuna.map((opcao) => (
+              <option key={ opcao } value={ opcao }>{opcao}</option>
+            ))}
+          </select>
+        </label>
+
+        <label htmlFor="ascendente">
+          <input
+            data-testid="column-sort-input-asc"
+            value="ASC"
+            type="radio"
+            id="ascendente"
+            name="radio-ordenar"
+            onClick={ ({ target: { value } }) => setRadioClicado(value) }
+          />
+          {'Ascendente '}
+        </label>
+
+        <label htmlFor="descendente">
+          <input
+            data-testid="column-sort-input-desc"
+            value="DESC"
+            type="radio"
+            id="descendente"
+            name="radio-ordenar"
+            onClick={ ({ target: { value } }) => setRadioClicado(value) }
+          />
+          {'Descendente '}
+        </label>
+
+        <button
+          data-testid="column-sort-button"
+          type="button"
+          onClick={ ordenaPlanetas }
+        >
+          Ordenar
+        </button>
       </div>
 
       {filtrosAplicados
@@ -114,8 +165,15 @@ export default function Table() {
             .filter(({ name }) => name.includes(nome))
             .map((planeta) => (
               <tr key={ planeta.name }>
-                {Object.values(planeta).map((value, index) => (
-                  <td key={ index }>{value}</td>
+                {Object.keys(planeta).map((chave) => (
+                  <td
+                    key={ planeta[chave] }
+                    data-testid={
+                      chave === 'name' ? 'planet-name' : ''
+                    }
+                  >
+                    {planeta[chave]}
+                  </td>
                 ))}
               </tr>
             ))}

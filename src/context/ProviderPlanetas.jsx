@@ -16,15 +16,17 @@ export default function ProviderPlanetas({ children }) {
     'rotation_period',
     'surface_water',
   ]);
+  const [colunaOrdenar, setColunaOrdenar] = useState('population');
+  const [radioClicado, setRadioClicado] = useState('');
 
   const [backupPlanetas, setBackupPlanetas] = useState([]);
   const [titulosColunas, setTitulosColunas] = useState([]);
+
   const opcoesFiltroComparacao = [
     'maior que',
     'menor que',
     'igual a',
   ];
-
   const backupOpcoesFiltroColuna = [
     'population',
     'orbital_period',
@@ -62,6 +64,7 @@ export default function ProviderPlanetas({ children }) {
     const opcaoSelecionada = options[selectedIndex].value;
     if (id === 'coluna') setColuna(opcaoSelecionada);
     if (id === 'operador') setOperador(opcaoSelecionada);
+    if (id === 'coluna-ordenar') setColunaOrdenar(opcaoSelecionada);
   };
 
   const aplicaFiltro = (arrayPlanetas, opcaoColuna, opcaoOperador, valorDigitado) => {
@@ -134,8 +137,19 @@ export default function ProviderPlanetas({ children }) {
     setValor(0);
   };
 
+  const ordenaPlanetas = () => {
+    // const colunaEscolhida = colunaOrdenar;
+    // const tipoOrdenacao = radioClicado;
+
+    const novoPlanetas = planetas.sort((a, b) => a[colunaOrdenar] - b[colunaOrdenar]);
+    console.log(novoPlanetas);
+    setPlanetas(novoPlanetas);
+  };
+
   const estadoGlobal = {
+    backupOpcoesFiltroColuna,
     coluna,
+    colunaOrdenar,
     nome,
     filtrosAplicados,
     opcoesFiltroColuna,
@@ -145,10 +159,12 @@ export default function ProviderPlanetas({ children }) {
     titulosColunas,
     valor,
     aplicaFiltro,
+    ordenaPlanetas,
     recebeOpcaoSelecionada,
     recebeTextoDigitado,
     removeFiltro,
     removeTodosFiltros,
+    setRadioClicado,
   };
 
   return (
